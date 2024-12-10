@@ -21,10 +21,9 @@ class TestFeatureExtractorCNN(unittest.TestCase):
         adam_1 = np.array([])
         for images, labels in data_loader:
             embeddings = model(images)
-
-            adam_1 = embeddings[0].detach().numpy()
-            adam_2 = embeddings[1].detach().numpy()
-            not_adam = embeddings[2].detach().numpy()
+            print("length of images: ", len(images))
+            print(labels)
+            print(len(embeddings[0]))
 
             euclidean_distance1 = F.cosine_similarity(embeddings[0], embeddings[1], dim=0)
             euclidean_distance2 = F.cosine_similarity(embeddings[0], embeddings[2], dim=0)
