@@ -16,9 +16,6 @@ lsh = LSH(10, threshold=0.99, dimension=100)
 lsh.insert(query, True)
 lsh.insert(query2, False)
 
-print(lsh.query(query))
-query2results = lsh.query(query2)
-if len(query2results) > 0:
-    print("results from query 2")
-    result = query2results[0]
-    print(result[-2])
+print(lsh.query(query2))
+print(lsh.query_percent_real(query2))
+print(lsh.query_percent_real(query))
