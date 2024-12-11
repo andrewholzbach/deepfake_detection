@@ -1,0 +1,4 @@
+Accuracy of labeling real test embeddings as real: 0.999
+Accuracy of labeling fake test embeddings as fake: 1.0
+
+Average time per prediction (in milliseconds): 4.26098096370697

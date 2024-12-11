@@ -1,0 +1,13 @@
+Epoch [1/8], Train Loss: 0.0386, Validation Loss: 0.0065
+Epoch [2/8], Train Loss: 0.0043, Validation Loss: 0.0030
+Epoch [3/8], Train Loss: 0.0028, Validation Loss: 0.0029
+Epoch [4/8], Train Loss: 0.0018, Validation Loss: 0.0033
+Epoch [5/8], Train Loss: 0.0016, Validation Loss: 0.0016
+Epoch [6/8], Train Loss: 0.0011, Validation Loss: 0.0009
+Epoch [7/8], Train Loss: 0.0009, Validation Loss: 0.0010
+Epoch [8/8], Train Loss: 0.0008, Validation Loss: 0.0007
+
+Accuracy of labeling real test images as real: 1.0
+Accuracy of labeling fake test images as fake: 1.0
+
+Average time taken per prediction (in milliseconds): 87.2105004787445
