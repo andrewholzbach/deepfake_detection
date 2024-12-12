@@ -9,8 +9,6 @@ def embeddings_to_dataframe(file_path):
     return df
 
 def evaluate_lsh(lsh, test_real_embeddings, test_fake_embeddings):
-
-    
     correct_real = 0
     total_real = len(test_real_embeddings)
     total_real_time = 0  
