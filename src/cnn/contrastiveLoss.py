@@ -8,6 +8,7 @@ from PIL import Image
 import random
 import numpy as np
 import time
+import pickle
 
 #device = cpu if run locally
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -21,10 +22,10 @@ transform = transforms.Compose([
 ])
 
 # Paths to datasets
-real_dir = "train_realImages"
-fake_dir = "train_fakeImages"
-test_real = "test_realImages"
-test_fake = "test_fakeImages"
+real_dir = "src/cnn/train_realImages"
+fake_dir = "src/cnn/train_fakeImages"
+test_real = "src/cnn/test_realImages"
+test_fake = "src/cnn/test_fakeImages"
 
 #ImageDataset represents single image inputs
 class ImageDataset(Dataset):
@@ -242,8 +243,15 @@ def evaluate(model, test_real_dataloader, real_dataloader, fake_dataloader, devi
     return accuracy, average_time_per_image
 
 
-# Train the model
+#Train the model
 train_model(model, train_loader, val_loader, criterion, optimizer, epochs=8)
+
+#save the model to pickle
+with open('model.pkl', 'wb') as file:
+    pickle.dump(model, file)
+
+with open('model.pkl', 'rb') as file:
+    model = pickle.load(file)
 
 #Get accuracy metrics
 accuracy, avgTime1 = evaluate(model, testReal_loader, real_loader, fake_loader, threshold=0.5)
