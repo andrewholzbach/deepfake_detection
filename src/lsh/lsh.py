@@ -1,14 +1,14 @@
 import numpy as np
-import time
 from nearpy import Engine
-from nearpy.filters import DistanceThresholdFilter
-from nearpy.hashes import RandomBinaryProjections
+from nearpy.filters import DistanceThresholdFilter, NearestFilter
+from nearpy.hashes import RandomBinaryProjections, LSHash
+from nearpy.distances import CosineDistance
 
 
 class LSH:
-    def __init__(self, num_hash_funcs:int, threshold=0.99, dimension=100):
-        hashes = [RandomBinaryProjections('rbp', 10) for _ in range(num_hash_funcs)]
-        self.engine = Engine(dimension, lshashes=hashes, vector_filters=[DistanceThresholdFilter(threshold)])
+    def __init__(self, dimension, num_hash_funcs:int):
+        hashes = [RandomBinaryProjections(f'rbp_{i}', 128) for i in range(num_hash_funcs)]
+        self.engine = Engine(dimension, lshashes=hashes)
 
     def insert(self, embedding, real:bool):
         if real:
@@ -17,11 +17,7 @@ class LSH:
             self.engine.store_vector(embedding, 'fake')
 
     def query(self, embedding):
-        start = time.time()
         neighbors = self.engine.neighbours(embedding)
-        end = time.time()
-        length = end-start
-        print("query took %i seconds", length)
         return neighbors
     
     def query_percent_real(self, embedding) -> float:
@@ -29,10 +25,7 @@ class LSH:
         total_size = len(neighbors)
         total_real = 0
         for neighbor in neighbors:
-            print("neighbor ", neighbor)
             if neighbor[1] == "real":
                 total_real += 1
         return total_real/total_size
         
-
-

@@ -20,12 +20,6 @@ transform = transforms.Compose([
     transforms.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5]),
 ])
 
-# Paths to datasets
-real_dir = "train_realImages"
-fake_dir = "train_fakeImages"
-test_real = "test_realImages"
-test_fake = "test_fakeImages"
-
 #ImageDataset represents single image inputs
 class ImageDataset(Dataset):
     def __init__(self, image_folder, transform=None):
@@ -78,30 +72,6 @@ class PairedDataset(Dataset):
 
         return img1, img2, torch.tensor(label)
 
-
-# Create dataset and split into training and validation sets
-dataset = PairedDataset(real_dir, fake_dir, transform=transform)
-train_size = int(0.8 * len(dataset))
-val_size = len(dataset) - train_size
-
-train_dataset, val_dataset = random_split(dataset, [train_size, val_size])
-
-real_dataset = ImageDataset(real_dir, transform=transform)
-fake_dataset = ImageDataset(fake_dir, transform=transform)
-testReal_dataset = ImageDataset(test_real, transform=transform)
-testFake_dataset = ImageDataset(test_fake, transform=transform)
-
-# Create DataLoader instances to iterate through the datasets
-
-real_loader = DataLoader(real_dataset, batch_size=32, shuffle=True)
-fake_loader = DataLoader(fake_dataset, batch_size=32, shuffle=True)
-testReal_loader =DataLoader(testReal_dataset, batch_size=32, shuffle=True)
-testFake_loader = DataLoader(testFake_dataset, batch_size=32, shuffle=True)
-train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True)
-val_loader = DataLoader(val_dataset, batch_size=32, shuffle=False)
-
-
-
 # Define the CNN model
 class ContrastiveCNN(nn.Module):
     def __init__(self):
@@ -132,11 +102,6 @@ class ContrastiveLoss(nn.Module):
         loss = (1 - label) * torch.pow(euclidean_distance, 2) + \
                label * torch.pow(torch.clamp(self.margin - euclidean_distance, min=0.0), 2)
         return loss.mean()
-
-
-model = ContrastiveCNN().to(device)
-criterion = ContrastiveLoss(margin=1.0)
-optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)
 
 # Training loop
 def train_model(model, train_loader, val_loader, criterion, optimizer, epochs=8):
@@ -241,22 +206,6 @@ def evaluate(model, test_real_dataloader, real_dataloader, fake_dataloader, devi
 
     return accuracy, average_time_per_image
 
-
-# Train the model
-train_model(model, train_loader, val_loader, criterion, optimizer, epochs=8)
-
-#Get accuracy metrics
-accuracy, avgTime1 = evaluate(model, testReal_loader, real_loader, fake_loader, threshold=0.5)
-print()
-accuracy2, avgTime2 = evaluate(model, testFake_loader, real_loader, fake_loader, threshold=0.5)
-accuracy2 = 1- accuracy2
-print(f"Accuracy of labeling real test images as real: {accuracy}")
-print(f"Accuracy of labeling fake test images as fake: {accuracy2}")
-print()
-avgTime = (avgTime1 + avgTime2)/2
-print(f"Average time taken per prediction (in milliseconds): {avgTime}")
-print()
-
 def save_embeddings(model, dataloader, file_path, device='cpu'):
     model.eval()  
     all_embeddings = []
@@ -275,10 +224,3 @@ def save_embeddings(model, dataloader, file_path, device='cpu'):
             f.write(embedding_line + '\n')
 
     print(f"Saved {len(all_embeddings)} embeddings to {file_path}")
-
-
-# Save embeddings for each dataset
-save_embeddings(model, real_loader, "embeddings/real_embeddings.txt", device)
-save_embeddings(model, fake_loader, "embeddings/fake_embeddings.txt", device)
-save_embeddings(model, testReal_loader, "embeddings/test_real_embeddings.txt", device)
-save_embeddings(model, testFake_loader, "embeddings/test_fake_embeddings.txt", device)
