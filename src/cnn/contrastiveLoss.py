@@ -215,26 +215,26 @@ def evaluate(model, test_real_dataloader, real_dataloader, fake_dataloader, devi
 
 
 #Train the model
-train_model(model, train_loader, val_loader, criterion, optimizer, epochs=8)
+# train_model(model, train_loader, val_loader, criterion, optimizer, epochs=8)
 
-#save the model to pickle
-with open('model.pkl', 'wb') as file:
-    pickle.dump(model, file)
+# #save the model to pickle
+# with open('model.pkl', 'wb') as file:
+#     pickle.dump(model, file)
 
-with open('model.pkl', 'rb') as file:
-    model = pickle.load(file)
+# with open('model.pkl', 'rb') as file:
+#     model = pickle.load(file)
 
-#Get accuracy metrics
-accuracy, avgTime1 = evaluate(model, testReal_loader, real_loader, fake_loader, threshold=0.5)
-print()
-accuracy2, avgTime2 = evaluate(model, testFake_loader, real_loader, fake_loader, threshold=0.5)
-accuracy2 = 1- accuracy2
-print(f"Accuracy of labeling real test images as real: {accuracy}")
-print(f"Accuracy of labeling fake test images as fake: {accuracy2}")
-print()
-avgTime = (avgTime1 + avgTime2)/2
-print(f"Average time taken per prediction (in milliseconds): {avgTime}")
-print()
+# #Get accuracy metrics
+# accuracy, avgTime1 = evaluate(model, testReal_loader, real_loader, fake_loader, threshold=0.5)
+# print()
+# accuracy2, avgTime2 = evaluate(model, testFake_loader, real_loader, fake_loader, threshold=0.5)
+# accuracy2 = 1- accuracy2
+# print(f"Accuracy of labeling real test images as real: {accuracy}")
+# print(f"Accuracy of labeling fake test images as fake: {accuracy2}")
+# print()
+# avgTime = (avgTime1 + avgTime2)/2
+# print(f"Average time taken per prediction (in milliseconds): {avgTime}")
+# print()
 
 def save_embeddings(model, dataloader, file_path, device='cpu'):
     model.eval()  

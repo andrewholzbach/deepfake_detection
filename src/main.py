@@ -94,16 +94,16 @@ def run_base_evaluate():
     print(f"Average time taken per prediction (in milliseconds): {avg_time}\n")
 
     # Save embeddings
-    save_embeddings(model, real_loader, "embeddings/real_embeddings.txt", device)
-    save_embeddings(model, fake_loader, "embeddings/fake_embeddings.txt", device)
-    save_embeddings(model, testReal_loader, "embeddings/test_real_embeddings.txt", device)
-    save_embeddings(model, testFake_loader, "embeddings/test_fake_embeddings.txt", device)
+    save_embeddings(model, real_loader, "src/embeddings/real_embeddings.txt", device)
+    save_embeddings(model, fake_loader, "src/embeddings/fake_embeddings.txt", device)
+    save_embeddings(model, testReal_loader, "src/embeddings/test_real_embeddings.txt", device)
+    save_embeddings(model, testFake_loader, "src/embeddings/test_fake_embeddings.txt", device)
 
 def run_lsh_evaluate(num_hash_functions: int):
-    real_embeddings_df = embeddings_to_dataframe("embeddings/real_embeddings.txt")
-    fake_embeddings_df = embeddings_to_dataframe("embeddings/fake_embeddings.txt")
-    test_real_embeddings_df = embeddings_to_dataframe("embeddings/test_real_embeddings.txt")
-    test_fake_embeddings_df = embeddings_to_dataframe("embeddings/test_fake_embeddings.txt")
+    real_embeddings_df = embeddings_to_dataframe("src/embeddings/real_embeddings.txt")
+    fake_embeddings_df = embeddings_to_dataframe("src/embeddings/fake_embeddings.txt")
+    test_real_embeddings_df = embeddings_to_dataframe("src/embeddings/test_real_embeddings.txt")
+    test_fake_embeddings_df = embeddings_to_dataframe("src/embeddings/test_fake_embeddings.txt")
 
     dimension = real_embeddings_df.shape[1] 
 
@@ -128,7 +128,7 @@ def plot_avg_time(num_hash_funcs_list, avg_times):
     plt.title('Average Time per Query vs. Number of Hash Functions')
     plt.grid(True)
     plt.legend()
-    plt.show()
+    plt.savefig("timeByHashFunc.png")
 
 def plot_error_rates(num_hash_funcs_list, false_positive_rates, false_negative_rates):
     plt.figure(figsize=(8, 6))
@@ -139,7 +139,7 @@ def plot_error_rates(num_hash_funcs_list, false_positive_rates, false_negative_r
     plt.title('Error Rates vs. Number of Hash Functions')
     plt.grid(True)
     plt.legend()
-    plt.show()
+    plt.savefig("errorRates.png")
 
 
 if __name__ == "__main__":
