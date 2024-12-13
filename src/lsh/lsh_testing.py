@@ -1,16 +1,14 @@
 import numpy as np
 import pandas as pd
-from lsh import LSH
 import time
+import lsh
 
 
 def embeddings_to_dataframe(file_path):
     df = pd.read_csv(file_path, sep=' ', header=None)
     return df
 
-def evaluate_lsh(lsh, test_real_embeddings, test_fake_embeddings):
-
-    
+def evaluate_lsh(lsh, test_real_embeddings, test_fake_embeddings,real_embeddings_df, fake_embeddings_df):
     correct_real = 0
     total_real = len(test_real_embeddings)
     total_real_time = 0  
@@ -29,6 +27,7 @@ def evaluate_lsh(lsh, test_real_embeddings, test_fake_embeddings):
     end_time = time.time()
 
     load_time = (end_time - start_time) * 1000
+
 
     # Evaluate real embeddings
     for _, test_embedding in test_real_embeddings.iterrows():
@@ -50,13 +49,11 @@ def evaluate_lsh(lsh, test_real_embeddings, test_fake_embeddings):
                 fake_score += weight
         
         predicted_label = 'real' if real_score > fake_score else 'fake'
-        
         if predicted_label == 'real':
             correct_real += 1
 
         end_time = time.time()  
         
-
         total_real_time += (end_time - start_time) * 1000  
 
     accuracy_real = correct_real / total_real
@@ -95,21 +92,3 @@ def evaluate_lsh(lsh, test_real_embeddings, test_fake_embeddings):
 
 
     return accuracy_real, accuracy_fake, avg_time
-
-real_embeddings_df = embeddings_to_dataframe("embeddings/real_embeddings.txt")
-fake_embeddings_df = embeddings_to_dataframe("embeddings/fake_embeddings.txt")
-test_real_embeddings_df = embeddings_to_dataframe("embeddings/test_real_embeddings.txt")
-test_fake_embeddings_df = embeddings_to_dataframe("embeddings/test_fake_embeddings.txt")
-
-dimension = real_embeddings_df.shape[1] 
-
-
-lsh = LSH(num_hash_funcs=10, threshold=0.99, dimension=dimension)
-
-
-accuracy_real, accuracy_fake, avg_time = evaluate_lsh(lsh, test_real_embeddings_df, test_fake_embeddings_df)
-
-print(f"Accuracy of labeling real test embeddings as real: {accuracy_real}")
-print(f"Accuracy of labeling fake test embeddings as fake: {accuracy_fake}")
-print()
-print(f"Average time per prediction (in milliseconds): {avg_time}")
