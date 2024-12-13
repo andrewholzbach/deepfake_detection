@@ -8,7 +8,6 @@ def main():
         model = pickle.load(file)
     print(model)
 
-    #NOTE: Only run this if you want to retrain the model. Else, the loaded model is already trained
     #cl.train_model(model, cl.train_loader, cl.val_loader, cl.criterion, cl.optimizer, epochs=8)
     
     accuracy, avgTime1 = cl.evaluate(model, cl.testReal_loader, cl.real_loader, cl.fake_loader, threshold=0.5)
